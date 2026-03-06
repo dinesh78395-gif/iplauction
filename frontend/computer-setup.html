@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Computer Mode Setup - IPL Mock Auction</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="setup-page">
+      <h1 class="title">Computer Mode Setup</h1>
+      
+      <div class="setup-form">
+        <div class="form-group">
+          <label for="playerName">Your Name</label>
+          <input type="text" id="playerName" placeholder="Enter your name" maxlength="20">
+        </div>
+
+        <div class="form-group">
+          <label>Select Your Franchise</label>
+          <div class="franchise-grid" id="franchiseGrid">
+            <div class="franchise-card" data-franchise="Chennai Super Kings">
+              <div class="franchise-logo">CSK</div>
+              <div class="franchise-name">Chennai Super Kings</div>
+            </div>
+            <div class="franchise-card" data-franchise="Mumbai Indians">
+              <div class="franchise-logo">MI</div>
+              <div class="franchise-name">Mumbai Indians</div>
+            </div>
+            <div class="franchise-card" data-franchise="Royal Challengers Bengaluru">
+              <div class="franchise-logo">RCB</div>
+              <div class="franchise-name">Royal Challengers Bengaluru</div>
+            </div>
+            <div class="franchise-card" data-franchise="Kolkata Knight Riders">
+              <div class="franchise-logo">KKR</div>
+              <div class="franchise-name">Kolkata Knight Riders</div>
+            </div>
+            <div class="franchise-card" data-franchise="Sunrisers Hyderabad">
+              <div class="franchise-logo">SRH</div>
+              <div class="franchise-name">Sunrisers Hyderabad</div>
+            </div>
+            <div class="franchise-card" data-franchise="Rajasthan Royals">
+              <div class="franchise-logo">RR</div>
+              <div class="franchise-name">Rajasthan Royals</div>
+            </div>
+            <div class="franchise-card" data-franchise="Delhi Capitals">
+              <div class="franchise-logo">DC</div>
+              <div class="franchise-name">Delhi Capitals</div>
+            </div>
+            <div class="franchise-card" data-franchise="Punjab Kings">
+              <div class="franchise-logo">PBKS</div>
+              <div class="franchise-name">Punjab Kings</div>
+            </div>
+            <div class="franchise-card" data-franchise="Lucknow Super Giants">
+              <div class="franchise-logo">LSG</div>
+              <div class="franchise-name">Lucknow Super Giants</div>
+            </div>
+            <div class="franchise-card" data-franchise="Gujarat Titans">
+              <div class="franchise-logo">GT</div>
+              <div class="franchise-name">Gujarat Titans</div>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn btn-primary" id="startAuctionBtn" disabled>Start Auction</button>
+        <button class="btn btn-secondary" onclick="window.location.href='index.html'">Back to Home</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    let selectedFranchise = null;
+    const playerNameInput = document.getElementById('playerName');
+    const startAuctionBtn = document.getElementById('startAuctionBtn');
+    const franchiseCards = document.querySelectorAll('.franchise-card');
+
+    // Franchise selection
+    franchiseCards.forEach(card => {
+      card.addEventListener('click', () => {
+        playClickSound();
+        franchiseCards.forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        selectedFranchise = card.dataset.franchise;
+        checkFormValid();
+      });
+    });
+
+    // Player name input
+    playerNameInput.addEventListener('input', checkFormValid);
+
+    function checkFormValid() {
+      const isValid = playerNameInput.value.trim() !== '' && selectedFranchise !== null;
+      startAuctionBtn.disabled = !isValid;
+    }
+
+    // Start auction
+    startAuctionBtn.addEventListener('click', () => {
+      playClickSound();
+      const playerName = playerNameInput.value.trim();
+      
+      if (!playerName || !selectedFranchise) {
+        playErrorSound();
+        alert('Please enter your name and select a franchise');
+        return;
+      }
+
+      playSuccessSound();
+      // Store setup data
+      localStorage.setItem('computerMode', JSON.stringify({
+        playerName: playerName,
+        selectedFranchise: selectedFranchise,
+        mode: 'computer'
+      }));
+
+      // Navigate to auction page
+      window.location.href = 'auction.html';
+    });
+  </script>
+</body>
+</html>

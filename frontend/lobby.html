@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multiplayer Lobby - IPL Mock Auction</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="lobby-page">
+      <h1 class="title">Multiplayer Lobby</h1>
+      
+      <div class="connection-status" id="connectionStatus">
+        <span class="status-indicator"></span>
+        <span class="status-text">Connecting...</span>
+      </div>
+
+      <!-- Create/Join Room Section -->
+      <div class="room-setup" id="roomSetup">
+        <div class="toggle-buttons">
+          <button class="toggle-btn active" id="createRoomToggle">Create Room</button>
+          <button class="toggle-btn" id="joinRoomToggle">Join Room</button>
+        </div>
+
+        <div class="room-form" id="createRoomForm">
+          <div class="form-group">
+            <label for="createPlayerName">Your Name</label>
+            <input type="text" id="createPlayerName" placeholder="Enter your name" maxlength="20">
+          </div>
+          <button class="btn btn-primary" id="createRoomBtn">Create Room</button>
+        </div>
+
+        <div class="room-form hidden" id="joinRoomForm">
+          <div class="form-group">
+            <label for="joinRoomCode">Room Code</label>
+            <input type="text" id="joinRoomCode" placeholder="Enter 6-character code" maxlength="6">
+          </div>
+          <div class="form-group">
+            <label for="joinPlayerName">Your Name</label>
+            <input type="text" id="joinPlayerName" placeholder="Enter your name" maxlength="20">
+          </div>
+          <button class="btn btn-primary" id="joinRoomBtn">Join Room</button>
+        </div>
+
+        <button class="btn btn-secondary" onclick="window.location.href='index.html'">Back to Home</button>
+      </div>
+
+      <!-- Lobby Section (shown after joining/creating room) -->
+      <div class="lobby-content hidden" id="lobbyContent">
+        <div class="room-info">
+          <h2>Room Code: <span id="roomCodeDisplay"></span></h2>
+          <button class="btn btn-small" id="copyRoomCodeBtn">Copy Code</button>
+        </div>
+
+        <div class="lobby-grid">
+          <div class="lobby-section">
+            <h3>Connected Players</h3>
+            <div class="players-list" id="playersList"></div>
+          </div>
+
+          <div class="lobby-section">
+            <h3>Select Your Franchise</h3>
+            <div class="franchise-grid-small" id="lobbyFranchiseGrid">
+              <div class="franchise-card-small" data-franchise="Chennai Super Kings">
+                <div class="franchise-logo-small">CSK</div>
+                <div class="lock-icon hidden">🔒</div>
+              </div>
+              <div class="franchise-card-small" data-franchise="Mumbai Indians">
+                <div class="franchise-logo-small">MI</div>
+                <div class="lock-icon hidden">🔒</div>
+              </div>
+              <div class="franchise-card-small" data-franchise="Royal Challengers Bengaluru">
+                <div class="franchise-logo-small">RCB</div>
+                <div class="lock-icon hidden">🔒</div>
+              </div>
+              <div class="franchise-card-small" data-franchise="Kolkata Knight Riders">
+                <div class="franchise-logo-small">KKR</div>
+                <div class="lock-icon hidden">🔒</div>
+              </div>
+              <div class="franchise-card-small" data-franchise="Sunrisers Hyderabad">
+                <div class="franchise-logo-small">SRH</div>
+                <div class="lock-icon hidden">🔒</div>
+              </div>
+              <div class="franchise-card-small" data-franchise="Rajasthan Royals">
+                <div class="franchise-logo-small">RR</div>
+                <div class="lock-icon hidden">🔒</div>
+              </div>
+              <div class="franchise-card-small" data-franchise="Delhi Capitals">
+                <div class="franchise-logo-small">DC</div>
+                <div class="lock-icon hidden">🔒</div>
+              </div>
+              <div class="franchise-card-small" data-franchise="Punjab Kings">
+                <div class="franchise-logo-small">PBKS</div>
+                <div class="lock-icon hidden">🔒</div>
+              </div>
+              <div class="franchise-card-small" data-franchise="Lucknow Super Giants">
+                <div class="franchise-logo-small">LSG</div>
+                <div class="lock-icon hidden">🔒</div>
+              </div>
+              <div class="franchise-card-small" data-franchise="Gujarat Titans">
+                <div class="franchise-logo-small">GT</div>
+                <div class="lock-icon hidden">🔒</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn btn-primary" id="startAuctionLobbyBtn" disabled>Start Auction</button>
+        <button class="btn btn-secondary" id="leaveLobbyBtn">Leave Lobby</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+  <script src="script.js"></script>
+  <script src="lobby.js"></script>
+</body>
+</html>

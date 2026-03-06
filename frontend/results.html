@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auction Results - IPL Mock Auction</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="results-page">
+      <h1 class="title">Auction Results</h1>
+
+      <!-- Search and Filters -->
+      <div class="results-filters">
+        <input type="text" id="searchInput" placeholder="Search players..." class="search-input">
+        <select id="roleFilter" class="filter-select">
+          <option value="">All Roles</option>
+          <option value="Batter">Batter</option>
+          <option value="Bowler">Bowler</option>
+          <option value="All-Rounder">All-Rounder</option>
+          <option value="Wicketkeeper">Wicketkeeper</option>
+        </select>
+        <select id="nationalityFilter" class="filter-select">
+          <option value="">All Nationalities</option>
+          <option value="indian">Indian</option>
+          <option value="overseas">Overseas</option>
+        </select>
+        <select id="statusFilter" class="filter-select">
+          <option value="">All Status</option>
+          <option value="sold">Sold</option>
+          <option value="unsold">Unsold</option>
+        </select>
+      </div>
+
+      <!-- Statistics Panel -->
+      <div class="statistics-panel">
+        <h2>Auction Statistics</h2>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon">💰</div>
+            <div class="stat-info">
+              <div class="stat-label">Most Expensive Player</div>
+              <div class="stat-value" id="mostExpensivePlayer">-</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">💵</div>
+            <div class="stat-info">
+              <div class="stat-label">Highest Remaining Purse</div>
+              <div class="stat-value" id="highestPurse">-</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">👥</div>
+            <div class="stat-info">
+              <div class="stat-label">Largest Squad</div>
+              <div class="stat-value" id="largestSquad">-</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Franchise Squads -->
+      <div class="squads-section">
+        <h2>Franchise Squads</h2>
+        <div class="squads-container" id="squadsContainer"></div>
+      </div>
+
+      <!-- Unsold Players -->
+      <div class="unsold-section">
+        <h2>Unsold Players (<span id="unsoldCount">0</span>)</h2>
+        <div class="unsold-players-list" id="unsoldPlayersList"></div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="results-actions">
+        <button class="btn btn-primary" id="exportResultsBtn">Export Results (JSON)</button>
+        <button class="btn btn-secondary" onclick="window.location.href='index.html'">Return to Home</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script src="results.js"></script>
+</body>
+</html>

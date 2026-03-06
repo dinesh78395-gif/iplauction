@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auction Room - IPL Mock Auction</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="auction-container">
+    <!-- Auction Status Bar -->
+    <div class="auction-status-bar">
+      <div class="auction-status-message" id="auctionStatusMessage">Auction Starting...</div>
+      <div class="auction-controls-top">
+        <button class="btn btn-small" id="pauseResumeBtn">Pause</button>
+        <div class="player-counter" id="playerCounter">Player 1 of 200</div>
+      </div>
+    </div>
+
+    <!-- Main Auction Area -->
+    <div class="auction-main">
+      <!-- Player Card (Center) -->
+      <div class="player-card-container">
+        <div class="player-card" id="playerCard">
+          <div class="player-header">
+            <h2 class="player-name" id="playerName">Loading...</h2>
+            <div class="player-nationality" id="playerNationality"></div>
+          </div>
+          <div class="player-details">
+            <div class="player-role" id="playerRole"></div>
+            <div class="player-type" id="playerType"></div>
+            <div class="player-stats">
+              <div class="stat">
+                <span class="stat-label">Base Price</span>
+                <span class="stat-value" id="playerBasePrice">₹0 L</span>
+              </div>
+              <div class="stat">
+                <span class="stat-label">Current Bid</span>
+                <span class="stat-value highlight" id="currentBidAmount">₹0 L</span>
+              </div>
+            </div>
+            <div class="highest-bidder" id="highestBidder">No bids yet</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bidding Controls (Bottom) -->
+      <div class="bidding-controls">
+        <div class="bid-buttons">
+          <button class="btn-bid" id="bid10L" data-increment="0.1">+10L</button>
+          <button class="btn-bid" id="bid25L" data-increment="0.25">+25L</button>
+          <button class="btn-bid" id="bid50L" data-increment="0.5">+50L</button>
+          <button class="btn-bid" id="bid1Cr" data-increment="1">+1Cr</button>
+        </div>
+        <div class="action-buttons">
+          <button class="btn btn-secondary" id="passBtn">Pass</button>
+          <button class="btn btn-success hidden" id="markSoldBtn">Mark Sold</button>
+          <button class="btn btn-warning hidden" id="markUnsoldBtn">Mark Unsold</button>
+          <button class="btn btn-primary hidden" id="nextPlayerBtn">Next Player</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Side Panel -->
+    <div class="auction-sidebar">
+      <!-- Team Dashboard -->
+      <div class="sidebar-section">
+        <h3>Franchises</h3>
+        <div class="franchises-dashboard" id="franchisesDashboard"></div>
+      </div>
+
+      <!-- Live Bid Feed -->
+      <div class="sidebar-section">
+        <h3>Live Bids</h3>
+        <div class="bid-feed" id="bidFeed">
+          <div class="bid-feed-empty">No bids yet</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sold Popup -->
+    <div class="sold-popup hidden" id="soldPopup">
+      <div class="sold-animation">
+        <div class="hammer">🔨</div>
+        <h2>SOLD!</h2>
+        <div class="sold-details">
+          <div class="sold-player" id="soldPlayerName"></div>
+          <div class="sold-team" id="soldTeamName"></div>
+          <div class="sold-price" id="soldPrice"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pause Overlay -->
+    <div class="pause-overlay hidden" id="pauseOverlay">
+      <div class="pause-message">
+        <h2>⏸️ Auction Paused</h2>
+        <p id="pauseMessage">Waiting for host to resume...</p>
+        <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+          <button class="btn btn-primary" id="resumeFromOverlayBtn" style="flex: 1;">Resume Auction</button>
+          <button class="btn btn-secondary" id="backToHomeBtn" style="flex: 1;">Back to Home</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+  <script src="script.js"></script>
+  <script src="auction.js"></script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+{
+  "name": "ipl-mock-auction",
+  "version": "1.0.0",
+  "description": "IPL Mock Auction - Full-stack web application for simulating IPL player auctions",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  },
+  "keywords": ["ipl", "auction", "cricket", "multiplayer"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "socket.io": "^4.6.1",
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "jest": "^29.5.0",
+    "fast-check": "^3.15.0"
+  }
+}

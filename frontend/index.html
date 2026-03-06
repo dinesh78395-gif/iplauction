@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IPL Mock Auction</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="home-page">
+      <h1 class="title">IPL Mock Auction</h1>
+      <p class="subtitle">Experience the thrill of IPL player auctions</p>
+      
+      <div class="mode-selection">
+        <div class="mode-card" id="computerModeBtn">
+          <div class="mode-icon">🤖</div>
+          <h2>Computer Mode</h2>
+          <p>Play offline against 9 AI opponents</p>
+        </div>
+        
+        <div class="mode-card" id="multiplayerModeBtn">
+          <div class="mode-icon">👥</div>
+          <h2>Multiplayer Mode</h2>
+          <p>Create or join rooms to play with friends</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    // Home page navigation
+    document.getElementById('computerModeBtn').addEventListener('click', () => {
+      playClickSound();
+      window.location.href = 'computer-setup.html';
+    });
+
+    document.getElementById('multiplayerModeBtn').addEventListener('click', () => {
+      playClickSound();
+      window.location.href = 'lobby.html';
+    });
+  </script>
+</body>
+</html>

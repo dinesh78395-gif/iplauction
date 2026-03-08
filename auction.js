@@ -232,7 +232,7 @@ function initializeMultiplayerMode(data) {
 
  
 // Connect to socket
-  socket = io("https://iplauction-096t.onrender.com");
+  socket = io('http://localhost:3000');
 
   socket.on('connect', () => {
     console.log('Connected to auction');

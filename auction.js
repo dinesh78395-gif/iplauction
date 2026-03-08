@@ -48,8 +48,12 @@ async function initializeAuction() {
 // Initialize Computer Mode
 async function initializeComputerMode(data) {
   try {
-    // Load players from API
-    const response = await fetch('https://iplauction-096t.onrender.com/api/players');
+    // Load players from API - use production URL if not on localhost
+    const apiUrl = window.location.hostname === 'localhost'
+      ? 'http://localhost:3000/api/players'
+      : 'https://iplauction-096t.onrender.com/api/players';
+    
+    const response = await fetch(apiUrl);
     players = await response.json();
 
     // Create franchises
@@ -230,9 +234,12 @@ function initializeMultiplayerMode(data) {
   myFranchise = data.myFranchise;
   isHost = data.isHost;
 
- 
-// Connect to socket
-  socket = io('http://localhost:3000');
+  // Connect to socket - use production URL if not on localhost
+  const socketUrl = window.location.hostname === 'localhost' 
+    ? 'http://localhost:3000' 
+    : 'https://iplauction-096t.onrender.com';
+  
+  socket = io(socketUrl);
 
   socket.on('connect', () => {
     console.log('Connected to auction');

@@ -8,7 +8,12 @@ let isHost = false;
 
 // Initialize Socket.IO connection
 function initializeSocket() {
-  socket = io('http://localhost:3000');
+  // Use production URL if not on localhost
+  const socketUrl = window.location.hostname === 'localhost' 
+    ? 'http://localhost:3000' 
+    : 'https://iplauction-096t.onrender.com';
+  
+  socket = io(socketUrl);
 
   socket.on('connect', () => {
     console.log('Connected to server');

@@ -23,7 +23,7 @@ app.get("/", (req, res) => {
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '../frontend')));
+app.use(express.static(path.join(__dirname, '..')));
 
 // API endpoint to serve players data
 app.get('/api/players', (req, res) => {
@@ -145,7 +145,7 @@ io.on('connection', (socket) => {
   });
 
   // Place Bid
-  socket.on("placeBid", ({ amount, franchise }) => {
+  socket.on("placeBid", ({ amount, franchise: franchiseNameFromClient }) => {
     try {
       const room = roomManager.getRoomBySocketId(socket.id);
       if (!room || !room.auctionEngine) {
@@ -161,25 +161,26 @@ io.on('connection', (socket) => {
         return;
       }
 
-      const franchise = room.auctionEngine.franchises.find(f => f.name === player.franchiseName);
-      console.log('Franchise found:', franchise ? franchise.name : 'NOT FOUND');
+      const franchiseObj = room.auctionEngine.franchises.find(f => f.name === player.franchiseName);
+      console.log('Franchise found:', franchiseObj ? franchiseObj.name : 'NOT FOUND');
+      console.log('Franchise from client:', franchiseNameFromClient);
       
-      if (!franchise) {
+      if (!franchiseObj) {
         socket.emit('error', { message: 'Franchise not found' });
         return;
       }
 
-      const result = room.auctionEngine.placeBid(franchise, amount);
+      const result = room.auctionEngine.placeBid(franchiseObj, amount);
       
       if (!result.success) {
         socket.emit('error', { message: result.error });
         return;
       }
 
-      console.log('Bid placed by:', franchise.name, 'Amount:', amount);
+      console.log('Bid placed by:', franchiseObj.name, 'Amount:', amount);
       
       io.to(room.roomCode).emit('bidPlaced', {
-        franchise: franchise.name,
+        franchise: franchiseObj.name,
         amount: amount,
         auctionState: room.auctionEngine.getAuctionState()
       });

@@ -145,7 +145,7 @@ io.on('connection', (socket) => {
   });
 
   // Place Bid
-  socket.on('placeBid', ({ amount }) => {
+  socket.on("placeBid", ({ amount, franchise }) => {
     try {
       const room = roomManager.getRoomBySocketId(socket.id);
       if (!room || !room.auctionEngine) {

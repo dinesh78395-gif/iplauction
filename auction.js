@@ -523,7 +523,10 @@ function placeBid(increment) {
     // Multiplayer mode - use tracked current bid
     const newBid = currentBidAmount + increment;
     console.log('Multiplayer bid - Current:', currentBidAmount, 'Increment:', increment, 'New:', newBid);
-    socket.emit('placeBid', { amount: newBid });
+    socket.emit('placeBid', {
+      amount: newBid,
+      franchise: myFranchise.name
+      });
   }
 }
 

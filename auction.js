@@ -48,7 +48,7 @@ async function initializeAuction() {
 async function initializeComputerMode(data) {
   try {
     // Load players from API
-    const response = await fetch('/api/players');
+    const response = await fetch('https://iplauction-096t.onrender.com/api/players');
     players = await response.json();
 
     // Create franchises

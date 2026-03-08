@@ -154,12 +154,16 @@ io.on('connection', (socket) => {
       }
 
       const player = room.players.find(p => p.socketId === socket.id);
+      console.log('Place bid - Socket ID:', socket.id, 'Player:', player);
+      
       if (!player || !player.franchiseName) {
         socket.emit('error', { message: 'No franchise selected' });
         return;
       }
 
       const franchise = room.auctionEngine.franchises.find(f => f.name === player.franchiseName);
+      console.log('Franchise found:', franchise ? franchise.name : 'NOT FOUND');
+      
       if (!franchise) {
         socket.emit('error', { message: 'Franchise not found' });
         return;
@@ -172,12 +176,15 @@ io.on('connection', (socket) => {
         return;
       }
 
+      console.log('Bid placed by:', franchise.name, 'Amount:', amount);
+      
       io.to(room.roomCode).emit('bidPlaced', {
         franchise: franchise.name,
         amount: amount,
         auctionState: room.auctionEngine.getAuctionState()
       });
     } catch (error) {
+      console.error('Place bid error:', error);
       socket.emit('error', { message: 'Failed to place bid' });
     }
   });

@@ -289,9 +289,11 @@ document.getElementById('startAuctionLobbyBtn').addEventListener('click', () => 
     return;
   }
 
+  // Allow starting even without selecting a franchise - AI will control all teams
   if (!myFranchise) {
-    playErrorSound();
-    showToast('Please select a franchise first', 'warning');
+    if (confirm('You haven\'t selected a franchise. AI will control all teams. Continue?')) {
+      socket.emit('startAuction');
+    }
     return;
   }
 

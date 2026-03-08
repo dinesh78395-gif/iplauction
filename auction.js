@@ -25,6 +25,7 @@ let isHost = false;
 let aiTimeout = null;
 let autoSellTimeout = null;
 let lastBidTime = null;
+let currentBidAmount = 0; // Track current bid for multiplayer mode
 
 // Initialize auction based on mode
 async function initializeAuction() {
@@ -519,9 +520,9 @@ function placeBid(increment) {
       showToast(result.error, 'error');
     }
   } else {
-    // Multiplayer mode
-    const currentBid = parseFloat(document.getElementById('currentBidAmount').textContent.replace(/[₹,L]/g, '')) / 100;
-    const newBid = currentBid + increment;
+    // Multiplayer mode - use tracked current bid
+    const newBid = currentBidAmount + increment;
+    console.log('Multiplayer bid - Current:', currentBidAmount, 'Increment:', increment, 'New:', newBid);
     socket.emit('placeBid', { amount: newBid });
   }
 }
@@ -762,9 +763,11 @@ function finishAuction() {
 // Multiplayer Event Handlers
 function handleBidPlaced({ franchise, amount, auctionState }) {
   playBidSound();
+  currentBidAmount = amount; // Update tracked bid amount
   document.getElementById('currentBidAmount').textContent = formatCurrency(amount);
   document.getElementById('highestBidder').textContent = `Highest Bidder: ${franchise}`;
   addToBidFeed(franchise, amount);
+  console.log('Bid placed by:', franchise, 'Amount:', amount);
 }
 
 function handlePlayerSold({ player, franchise, price }) {
@@ -779,6 +782,7 @@ function handlePlayerUnsold({ player }) {
 
 function handleNextPlayer({ player, auctionState }) {
   playNextPlayerSound();
+  currentBidAmount = player.basePrice / 100; // Reset to base price in crore
   displayPlayer(player);
   document.getElementById('bidFeed').innerHTML = '<div class="bid-feed-empty">No bids yet</div>';
 }

@@ -230,7 +230,7 @@ function initializeMultiplayerMode(data) {
   isHost = data.isHost;
 
   // Connect to socket
-  socket = io('http://localhost:3000');
+  const socket = io("https://YOUR-RENDER-NAME.onrender.com");
 
   socket.on('connect', () => {
     console.log('Connected to auction');

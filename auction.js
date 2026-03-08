@@ -229,8 +229,9 @@ function initializeMultiplayerMode(data) {
   myFranchise = data.myFranchise;
   isHost = data.isHost;
 
-  // Connect to socket
-  const socket = io("https://YOUR-RENDER-NAME.onrender.com");
+ 
+// Connect to socket
+  socket = io("https://iplauction-096t.onrender.com");
 
   socket.on('connect', () => {
     console.log('Connected to auction');

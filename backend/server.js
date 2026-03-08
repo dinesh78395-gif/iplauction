@@ -16,6 +16,9 @@ const io = socketIO(server, {
     methods: ['GET', 'POST']
   }
 });
+app.get("/", (req, res) => {
+  res.send("IPL Auction Backend Running 🚀");
+});
 
 // Middleware
 app.use(cors());

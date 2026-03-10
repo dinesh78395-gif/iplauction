@@ -110,6 +110,12 @@ io.on('connection', (socket) => {
       const oldSocketId = player.socketId;
       player.socketId = socket.id;
 
+      // Update host ID if the rejoining player was the host
+      if (room.hostId === oldSocketId) {
+        room.hostId = socket.id;
+        console.log(`Updated hostId for room ${roomCode} to ${socket.id}`);
+      }
+
       // Update socket-to-room mapping
       roomManager.socketToRoom.delete(oldSocketId);
       roomManager.socketToRoom.set(socket.id, roomCode);
@@ -201,8 +207,12 @@ io.on('connection', (socket) => {
   socket.on("placeBid", ({ amount, franchise: franchiseNameFromClient }) => {
     try {
       const room = roomManager.getRoomBySocketId(socket.id);
-      if (!room || !room.auctionEngine) {
-        socket.emit('error', { message: 'Auction not active' });
+      if (!room) {
+        socket.emit('error', { message: 'Room not found. Please refresh.' });
+        return;
+      }
+      if (!room.auctionEngine) {
+        socket.emit('error', { message: 'Auction engine not found' });
         return;
       }
 
@@ -269,8 +279,12 @@ io.on('connection', (socket) => {
   socket.on('markSold', () => {
     try {
       const room = roomManager.getRoomBySocketId(socket.id);
-      if (!room || !room.auctionEngine) {
-        socket.emit('error', { message: 'Auction not active' });
+      if (!room) {
+        socket.emit('error', { message: 'Room not found. Please refresh.' });
+        return;
+      }
+      if (!room.auctionEngine) {
+        socket.emit('error', { message: 'Auction engine not found' });
         return;
       }
 
@@ -300,8 +314,12 @@ io.on('connection', (socket) => {
   socket.on('markUnsold', () => {
     try {
       const room = roomManager.getRoomBySocketId(socket.id);
-      if (!room || !room.auctionEngine) {
-        socket.emit('error', { message: 'Auction not active' });
+      if (!room) {
+        socket.emit('error', { message: 'Room not found. Please refresh.' });
+        return;
+      }
+      if (!room.auctionEngine) {
+        socket.emit('error', { message: 'Auction engine not found' });
         return;
       }
 
@@ -329,8 +347,12 @@ io.on('connection', (socket) => {
   socket.on('nextPlayer', () => {
     try {
       const room = roomManager.getRoomBySocketId(socket.id);
-      if (!room || !room.auctionEngine) {
-        socket.emit('error', { message: 'Auction not active' });
+      if (!room) {
+        socket.emit('error', { message: 'Room not found. Please refresh.' });
+        return;
+      }
+      if (!room.auctionEngine) {
+        socket.emit('error', { message: 'Auction engine not found' });
         return;
       }
 
@@ -362,8 +384,12 @@ io.on('connection', (socket) => {
   socket.on('pauseAuction', () => {
     try {
       const room = roomManager.getRoomBySocketId(socket.id);
-      if (!room || !room.auctionEngine) {
-        socket.emit('error', { message: 'Auction not active' });
+      if (!room) {
+        socket.emit('error', { message: 'Room not found. Please refresh.' });
+        return;
+      }
+      if (!room.auctionEngine) {
+        socket.emit('error', { message: 'Auction engine not found' });
         return;
       }
 
@@ -383,8 +409,12 @@ io.on('connection', (socket) => {
   socket.on('resumeAuction', () => {
     try {
       const room = roomManager.getRoomBySocketId(socket.id);
-      if (!room || !room.auctionEngine) {
-        socket.emit('error', { message: 'Auction not active' });
+      if (!room) {
+        socket.emit('error', { message: 'Room not found. Please refresh.' });
+        return;
+      }
+      if (!room.auctionEngine) {
+        socket.emit('error', { message: 'Auction engine not found' });
         return;
       }
 

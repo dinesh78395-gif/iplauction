@@ -242,7 +242,18 @@ function initializeMultiplayerMode(data) {
   socket = io(socketUrl);
 
   socket.on('connect', () => {
-    console.log('Connected to auction');
+    console.log('Connected to auction, rejoining room:', data.roomCode);
+    // Rejoin the room after connecting
+    socket.emit('rejoinRoom', {
+      roomCode: data.roomCode,
+      franchiseName: myFranchise.name
+    });
+  });
+
+  socket.on('auctionStarted', ({ auctionState, currentPlayer }) => {
+    console.log('Auction started event received');
+    displayPlayer(currentPlayer);
+    currentBidAmount = currentPlayer.basePrice / 100;
   });
 
   socket.on('bidPlaced', handleBidPlaced);

@@ -88,6 +88,53 @@ io.on('connection', (socket) => {
     }
   });
 
+  // Rejoin Room (for auction page reconnection)
+  socket.on('rejoinRoom', ({ roomCode, franchiseName }) => {
+    try {
+      const room = roomManager.getRoomByCode(roomCode);
+      
+      if (!room) {
+        socket.emit('error', { message: 'Room not found' });
+        return;
+      }
+
+      // Find player by franchise name and update socket ID
+      const player = room.players.find(p => p.franchiseName === franchiseName);
+      
+      if (!player) {
+        socket.emit('error', { message: 'Player not found in room' });
+        return;
+      }
+
+      // Update player's socket ID
+      const oldSocketId = player.socketId;
+      player.socketId = socket.id;
+      
+      // Update socket-to-room mapping
+      roomManager.socketToRoom.delete(oldSocketId);
+      roomManager.socketToRoom.set(socket.id, roomCode);
+      
+      // Join the socket.io room
+      socket.join(roomCode);
+      
+      console.log(`Player ${franchiseName} rejoined room ${roomCode} with new socket ${socket.id}`);
+      
+      // Send current auction state if auction is active
+      if (room.auctionStarted && room.auctionEngine) {
+        const currentPlayer = room.auctionEngine.currentPlayer;
+        const auctionState = room.auctionEngine.getAuctionState();
+        
+        socket.emit('auctionStarted', {
+          auctionState: auctionState,
+          currentPlayer: currentPlayer
+        });
+      }
+    } catch (error) {
+      console.error('Rejoin room error:', error);
+      socket.emit('error', { message: 'Failed to rejoin room' });
+    }
+  });
+
   // Select Team
   socket.on('selectTeam', ({ franchiseName }) => {
     try {

@@ -17,7 +17,7 @@ const io = socketIO(server, {
   }
 });
 app.get("/", (req, res) => {
-  res.send("IPL Auction Backend Running 🚀");
+  res.send("IPL Auction Backend Running 🚀 - v2.0");
 });
 
 // Middleware

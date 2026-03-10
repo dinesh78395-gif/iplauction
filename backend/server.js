@@ -50,6 +50,74 @@ try {
   process.exit(1);
 }
 
+// Room Timers
+const roomTimers = new Map();
+
+function startRoomTimer(roomCode) {
+  if (roomTimers.has(roomCode)) {
+    clearInterval(roomTimers.get(roomCode));
+  }
+
+  let timeLeft = 10;
+  io.to(roomCode).emit('timerUpdate', { timeLeft });
+
+  const timerId = setInterval(() => {
+    timeLeft--;
+
+    // Check if room still exists and auction is active
+    const room = roomManager.getRoomByCode(roomCode);
+    if (!room || !room.auctionEngine || !room.auctionEngine.auctionActive) {
+      clearInterval(timerId);
+      roomTimers.delete(roomCode);
+      return;
+    }
+
+    // Skip if paused
+    if (room.auctionEngine.auctionPaused) return;
+
+    io.to(roomCode).emit('timerUpdate', { timeLeft });
+
+    if (timeLeft <= 0) {
+      clearInterval(timerId);
+      roomTimers.delete(roomCode);
+      handleAutoSell(roomCode);
+    }
+  }, 1000);
+
+  roomTimers.set(roomCode, timerId);
+}
+
+function handleAutoSell(roomCode) {
+  try {
+    const room = roomManager.getRoomByCode(roomCode);
+    if (!room || !room.auctionEngine) return;
+
+    if (room.auctionEngine.highestBidder) {
+      // Mark as sold
+      const result = room.auctionEngine.markSold();
+      if (result.success) {
+        io.to(roomCode).emit('playerSold', {
+          player: result.player,
+          franchise: result.franchise,
+          price: result.price
+        });
+        console.log(`Auto-sold: ${result.player.name} in room ${roomCode}`);
+      }
+    } else {
+      // Mark as unsold
+      const result = room.auctionEngine.markUnsold();
+      if (result.success) {
+        io.to(roomCode).emit('playerUnsold', {
+          player: result.player
+        });
+        console.log(`Auto-unsold: ${result.player.name} in room ${roomCode}`);
+      }
+    }
+  } catch (error) {
+    console.error('Auto-sell error:', error);
+  }
+}
+
 // Socket.IO connection handling
 io.on('connection', (socket) => {
   console.log(`Client connected: ${socket.id}`);
@@ -198,6 +266,9 @@ io.on('connection', (socket) => {
         currentPlayer: firstPlayer
       });
       console.log(`Auction started in room: ${room.roomCode}`);
+
+      // Start 10s auto-sell timer
+      startRoomTimer(room.roomCode);
     } catch (error) {
       socket.emit('error', { message: 'Failed to start auction' });
     }
@@ -247,6 +318,9 @@ io.on('connection', (socket) => {
         amount: amount,
         auctionState: room.auctionEngine.getAuctionState()
       });
+
+      // Reset timer on new bid
+      startRoomTimer(room.roomCode);
     } catch (error) {
       console.error('Place bid error:', error);
       socket.emit('error', { message: 'Failed to place bid' });
@@ -375,6 +449,9 @@ io.on('connection', (socket) => {
         player: nextPlayer,
         auctionState: room.auctionEngine.getAuctionState()
       });
+
+      // Start timer for next player
+      startRoomTimer(room.roomCode);
     } catch (error) {
       socket.emit('error', { message: 'Failed to advance to next player' });
     }

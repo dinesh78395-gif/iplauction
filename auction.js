@@ -265,6 +265,18 @@ function initializeMultiplayerMode(data) {
   socket.on('auctionFinished', handleAuctionFinished);
   socket.on('error', handleError);
 
+  socket.on('timerUpdate', ({ timeLeft }) => {
+    const timerElement = document.getElementById('auctionTimer');
+    if (timerElement) {
+      timerElement.textContent = timeLeft + 's';
+      if (timeLeft <= 3) {
+        timerElement.classList.add('warning');
+      } else {
+        timerElement.classList.remove('warning');
+      }
+    }
+  });
+
   // Show host controls
   if (isHost) {
     document.getElementById('markSoldBtn').classList.remove('hidden');

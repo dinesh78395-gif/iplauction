@@ -70,7 +70,7 @@ io.on('connection', (socket) => {
   socket.on('joinRoom', ({ roomCode, playerName }) => {
     try {
       const result = roomManager.joinRoom(roomCode, socket.id, playerName);
-      
+
       if (!result.success) {
         socket.emit('error', { message: result.error });
         return;
@@ -92,7 +92,7 @@ io.on('connection', (socket) => {
   socket.on('rejoinRoom', ({ roomCode, franchiseName }) => {
     try {
       const room = roomManager.getRoomByCode(roomCode);
-      
+
       if (!room) {
         socket.emit('error', { message: 'Room not found' });
         return;
@@ -100,7 +100,7 @@ io.on('connection', (socket) => {
 
       // Find player by franchise name and update socket ID
       const player = room.players.find(p => p.franchiseName === franchiseName);
-      
+
       if (!player) {
         socket.emit('error', { message: 'Player not found in room' });
         return;
@@ -109,21 +109,27 @@ io.on('connection', (socket) => {
       // Update player's socket ID
       const oldSocketId = player.socketId;
       player.socketId = socket.id;
-      
+
       // Update socket-to-room mapping
       roomManager.socketToRoom.delete(oldSocketId);
       roomManager.socketToRoom.set(socket.id, roomCode);
-      
+
       // Join the socket.io room
       socket.join(roomCode);
-      
+
       console.log(`Player ${franchiseName} rejoined room ${roomCode} with new socket ${socket.id}`);
-      
+
       // Send current auction state if auction is active
       if (room.auctionStarted && room.auctionEngine) {
+        const franchiseObj = room.auctionEngine.franchises.find(f => f.name === franchiseName);
+        if (franchiseObj) {
+          franchiseObj.isAI = false;
+          console.log(`Resetting AI flag for rejoining franchise: ${franchiseName}`);
+        }
+
         const currentPlayer = room.auctionEngine.currentPlayer;
         const auctionState = room.auctionEngine.getAuctionState();
-        
+
         socket.emit('auctionStarted', {
           auctionState: auctionState,
           currentPlayer: currentPlayer
@@ -145,7 +151,7 @@ io.on('connection', (socket) => {
       }
 
       const result = roomManager.selectTeam(room.roomCode, socket.id, franchiseName);
-      
+
       if (!result.success) {
         socket.emit('error', { message: result.error });
         return;
@@ -172,7 +178,7 @@ io.on('connection', (socket) => {
 
       const players = playerDatabase.getUnsoldPlayers();
       const result = roomManager.startAuction(room.roomCode, socket.id, players);
-      
+
       if (!result.success) {
         socket.emit('error', { message: result.error });
         return;
@@ -202,7 +208,7 @@ io.on('connection', (socket) => {
 
       const player = room.players.find(p => p.socketId === socket.id);
       console.log('Place bid - Socket ID:', socket.id, 'Player:', player);
-      
+
       if (!player || !player.franchiseName) {
         socket.emit('error', { message: 'No franchise selected' });
         return;
@@ -211,21 +217,21 @@ io.on('connection', (socket) => {
       const franchiseObj = room.auctionEngine.franchises.find(f => f.name === player.franchiseName);
       console.log('Franchise found:', franchiseObj ? franchiseObj.name : 'NOT FOUND');
       console.log('Franchise from client:', franchiseNameFromClient);
-      
+
       if (!franchiseObj) {
         socket.emit('error', { message: 'Franchise not found' });
         return;
       }
 
       const result = room.auctionEngine.placeBid(franchiseObj, amount);
-      
+
       if (!result.success) {
         socket.emit('error', { message: result.error });
         return;
       }
 
       console.log('Bid placed by:', franchiseObj.name, 'Amount:', amount);
-      
+
       io.to(room.roomCode).emit('bidPlaced', {
         franchise: franchiseObj.name,
         amount: amount,
@@ -274,7 +280,7 @@ io.on('connection', (socket) => {
       }
 
       const result = room.auctionEngine.markSold();
-      
+
       if (!result.success) {
         socket.emit('error', { message: result.error });
         return;
@@ -305,7 +311,7 @@ io.on('connection', (socket) => {
       }
 
       const result = room.auctionEngine.markUnsold();
-      
+
       if (!result.success) {
         socket.emit('error', { message: result.error });
         return;
@@ -334,7 +340,7 @@ io.on('connection', (socket) => {
       }
 
       const nextPlayer = room.auctionEngine.nextPlayer();
-      
+
       if (!nextPlayer) {
         // Auction finished
         io.to(room.roomCode).emit('auctionFinished', {
@@ -398,7 +404,7 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     console.log(`Client disconnected: ${socket.id}`);
     const result = roomManager.handleDisconnect(socket.id);
-    
+
     if (result && result.room) {
       io.to(result.room.roomCode).emit('playerLeft', {
         socketId: socket.id,

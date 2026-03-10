@@ -195,6 +195,10 @@ function handlePlayerLeft({ socketId, player }) {
 // Handle Auction Started
 function handleAuctionStarted({ auctionState, currentPlayer }) {
   playSuccessSound();
+  
+  // Clear any existing computer mode to prevent conflicts
+  localStorage.removeItem('computerMode');
+  
   // Store multiplayer mode data
   saveToLocalStorage('multiplayerMode', {
     roomCode: currentRoom.roomCode,

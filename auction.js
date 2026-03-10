@@ -52,7 +52,7 @@ async function initializeComputerMode(data) {
     const apiUrl = window.location.hostname === 'localhost'
       ? 'http://localhost:3000/api/players'
       : 'https://iplauction-096t.onrender.com/api/players';
-    
+
     const response = await fetch(apiUrl);
     players = await response.json();
 
@@ -76,7 +76,7 @@ async function initializeComputerMode(data) {
     // Initialize engines
     auctionEngine = new AuctionEngine();
     auctionEngine.initialize(franchises, players);
-    
+
     aiEngine = new AIBiddingEngine();
 
     // Start auction
@@ -104,11 +104,11 @@ async function initializeComputerMode(data) {
 function applyTeamTheme(teamName) {
   const colors = teamColors[teamName];
   if (!colors) return;
-  
+
   // Update CSS variables
   document.documentElement.style.setProperty('--color-accent', colors.primary);
   document.documentElement.style.setProperty('--color-accent-hover', colors.secondary);
-  
+
   // Create a custom style element for dynamic theming
   let styleEl = document.getElementById('dynamic-theme');
   if (!styleEl) {
@@ -116,7 +116,7 @@ function applyTeamTheme(teamName) {
     styleEl.id = 'dynamic-theme';
     document.head.appendChild(styleEl);
   }
-  
+
   styleEl.textContent = `
     :root {
       --color-accent: ${colors.primary};
@@ -212,7 +212,7 @@ function applyTeamTheme(teamName) {
       box-shadow: 0 0 20px ${colors.primary} !important;
     }
   `;
-  
+
   // Add a more vibrant gradient background
   document.body.style.background = `linear-gradient(135deg, 
     rgba(0, 0, 0, 0.95) 0%, 
@@ -224,7 +224,7 @@ function applyTeamTheme(teamName) {
 // Helper function to convert hex to RGB
 function hexToRgb(hex) {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result 
+  return result
     ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}`
     : '255, 215, 0';
 }
@@ -235,10 +235,10 @@ function initializeMultiplayerMode(data) {
   isHost = data.isHost;
 
   // Connect to socket - use production URL if not on localhost
-  const socketUrl = window.location.hostname === 'localhost' 
-    ? 'http://localhost:3000' 
+  const socketUrl = window.location.hostname === 'localhost'
+    ? 'http://localhost:3000'
     : 'https://iplauction-096t.onrender.com';
-  
+
   socket = io(socketUrl);
 
   socket.on('connect', () => {
@@ -280,7 +280,7 @@ function displayPlayer(player) {
   document.getElementById('playerRole').textContent = player.role;
   document.getElementById('playerType').textContent = player.overseas ? '🌍 Overseas' : '🇮🇳 Indian';
   document.getElementById('playerBasePrice').textContent = formatCurrency(player.basePrice / 100);
-  
+
   const currentBid = mode === 'computer' ? auctionEngine.currentBid : 0;
   document.getElementById('currentBidAmount').textContent = formatCurrency(currentBid);
   document.getElementById('highestBidder').textContent = 'No bids yet';
@@ -289,7 +289,7 @@ function displayPlayer(player) {
   const currentIndex = mode === 'computer' ? auctionEngine.currentPlayerIndex + 1 : 1;
   const totalPlayers = mode === 'computer' ? auctionEngine.allPlayers.length : 200;
   document.getElementById('playerCounter').textContent = `Player ${currentIndex} of ${totalPlayers}`;
-  
+
   // Reset auto-sell timer
   if (mode === 'computer') {
     startAutoSellTimer();
@@ -302,7 +302,7 @@ function displayPlayer(player) {
 function startAutoSellTimer() {
   clearTimeout(autoSellTimeout);
   lastBidTime = Date.now();
-  
+
   autoSellTimeout = setTimeout(() => {
     if (mode === 'computer' && auctionEngine.auctionActive && !auctionEngine.auctionPaused) {
       // Auto-sell to highest bidder or mark unsold
@@ -354,7 +354,7 @@ function updateDashboard() {
   franchisesList.forEach(franchise => {
     const item = document.createElement('div');
     item.className = 'franchise-dashboard-item';
-    
+
     if (mode === 'computer' && auctionEngine.highestBidder === franchise) {
       item.classList.add('highest-bidder');
     }
@@ -367,12 +367,12 @@ function updateDashboard() {
     // Create elements
     const franchiseInfo = document.createElement('div');
     franchiseInfo.className = 'franchise-info';
-    
+
     const franchiseName = document.createElement('span');
     franchiseName.className = `franchise-info-name ${franchise.isAI ? 'ai' : ''}`;
     franchiseName.textContent = franchise.name;
     franchiseInfo.appendChild(franchiseName);
-    
+
     const franchiseStats = document.createElement('div');
     franchiseStats.className = 'franchise-stats';
     franchiseStats.innerHTML = `
@@ -380,24 +380,24 @@ function updateDashboard() {
       <span>Squad: ${franchise.getSquadSize()}/25</span>
       <span>Overseas: ${franchise.getOverseasCount()}/8</span>
     `;
-    
+
     const viewButton = document.createElement('button');
     viewButton.className = 'btn-view-squad';
     viewButton.textContent = 'View Squad';
     viewButton.style.cssText = 'font-size: 0.75rem; padding: 0.25rem 0.75rem; margin-top: 0.5rem; width: 100%; background: var(--color-accent); color: var(--color-bg-primary); border: none; border-radius: 0.5rem; cursor: pointer; font-weight: 600;';
-    
+
     // Add click handler directly
-    viewButton.onclick = function(e) {
+    viewButton.onclick = function (e) {
       e.preventDefault();
       e.stopPropagation();
       playClickSound();
       showSquadModal(franchise.name);
     };
-    
+
     item.appendChild(franchiseInfo);
     item.appendChild(franchiseStats);
     item.appendChild(viewButton);
-    
+
     dashboardContainer.appendChild(item);
   });
 }
@@ -406,7 +406,7 @@ function updateDashboard() {
 function showSquadModal(franchiseName) {
   const franchise = franchises.find(f => f.name === franchiseName);
   if (!franchise) return;
-  
+
   // Create modal
   const modal = document.createElement('div');
   modal.className = 'squad-modal';
@@ -423,7 +423,7 @@ function showSquadModal(franchiseName) {
     z-index: 10000;
     padding: 1rem;
   `;
-  
+
   const modalContent = document.createElement('div');
   modalContent.style.cssText = `
     background: var(--color-bg-secondary);
@@ -435,18 +435,18 @@ function showSquadModal(franchiseName) {
     width: 100%;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
   `;
-  
+
   let playersHTML = '';
   if (franchise.squad.length > 0) {
     franchise.squad.forEach(player => {
       // The price is stored as 'purchasePrice' in the Franchise class
       const price = player.purchasePrice || player.soldPrice || 0;
-      
+
       // Smart price formatting: show in lakhs if less than 1 crore, otherwise in crore
       const priceDisplay = (price && price < 1)
-        ? formatCurrency(price, false) 
+        ? formatCurrency(price, false)
         : formatCurrency(price, true);
-      
+
       playersHTML += `
         <div style="display: flex; justify-content: space-between; padding: 0.75rem; background: var(--color-bg-primary); border-radius: 0.5rem; margin-bottom: 0.5rem;">
           <div>
@@ -462,7 +462,7 @@ function showSquadModal(franchiseName) {
   } else {
     playersHTML = '<p style="text-align: center; color: var(--color-text-secondary); padding: 2rem;">No players yet</p>';
   }
-  
+
   modalContent.innerHTML = `
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
       <h2 style="margin: 0;">${franchiseName}</h2>
@@ -491,16 +491,16 @@ function showSquadModal(franchiseName) {
       ${playersHTML}
     </div>
   `;
-  
+
   modal.appendChild(modalContent);
   document.body.appendChild(modal);
-  
+
   // Close modal handlers
   const closeModal = () => {
     playClickSound();
     document.body.removeChild(modal);
   };
-  
+
   modalContent.querySelector('.btn-close-modal').addEventListener('click', closeModal);
   modal.addEventListener('click', (e) => {
     if (e.target === modal) closeModal();
@@ -543,8 +543,8 @@ function placeBid(increment) {
     console.log('Multiplayer bid - Current:', currentBidAmount, 'Increment:', increment, 'New:', newBid);
     socket.emit('placeBid', {
       amount: newBid,
-      franchise: myFranchise.name
-      });
+      franchise: myFranchise // myFranchise is a string in multiplayer mode
+    });
   }
 }
 
@@ -555,7 +555,7 @@ function processAIBids() {
   }
 
   const aiFranchises = franchises.filter(f => f.isAI);
-  
+
   for (const franchise of aiFranchises) {
     if (franchise === auctionEngine.highestBidder) {
       continue;
@@ -570,7 +570,7 @@ function processAIBids() {
 
     if (decision.action === 'bid') {
       const result = auctionEngine.placeBid(franchise, decision.amount);
-      
+
       if (result.success) {
         playBidSound();
         document.getElementById('currentBidAmount').textContent = formatCurrency(decision.amount);
@@ -592,7 +592,7 @@ function processAIBids() {
 // Add to Bid Feed
 function addToBidFeed(franchiseName, amount) {
   const bidFeed = document.getElementById('bidFeed');
-  
+
   // Remove empty message
   const emptyMessage = bidFeed.querySelector('.bid-feed-empty');
   if (emptyMessage) {
@@ -660,7 +660,7 @@ document.getElementById('markUnsoldBtn').addEventListener('click', () => {
 document.getElementById('nextPlayerBtn').addEventListener('click', () => {
   if (mode === 'computer') {
     const nextPlayer = auctionEngine.nextPlayer();
-    
+
     if (nextPlayer) {
       playNextPlayerSound();
       displayPlayer(nextPlayer);
@@ -711,16 +711,16 @@ document.getElementById('backToHomeBtn').addEventListener('click', () => {
     // Clear timers
     clearTimeout(aiTimeout);
     clearTimeout(autoSellTimeout);
-    
+
     // Clear local storage
     localStorage.removeItem('computerMode');
     localStorage.removeItem('multiplayerMode');
-    
+
     // Disconnect socket if in multiplayer
     if (socket) {
       socket.disconnect();
     }
-    
+
     // Navigate to home
     window.location.href = 'index.html';
   }
@@ -748,9 +748,9 @@ function showSoldPopup(player, franchiseName, price) {
   document.getElementById('soldPlayerName').textContent = player.name;
   document.getElementById('soldTeamName').textContent = franchiseName;
   document.getElementById('soldPrice').textContent = formatCurrency(price);
-  
+
   popup.classList.remove('hidden');
-  
+
   setTimeout(() => {
     popup.classList.add('hidden');
   }, 2500);
@@ -759,7 +759,7 @@ function showSoldPopup(player, franchiseName, price) {
 // Finish Auction
 function finishAuction() {
   playAuctionCompleteSound();
-  
+
   // Save results
   const results = {
     franchises: franchises.map(f => ({
@@ -774,7 +774,7 @@ function finishAuction() {
   };
 
   saveToLocalStorage('auctionResults', results);
-  
+
   showToast('Auction Complete!', 'success');
   setTimeout(() => {
     window.location.href = 'results.html';

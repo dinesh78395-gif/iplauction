@@ -246,7 +246,7 @@ function initializeMultiplayerMode(data) {
     // Rejoin the room after connecting
     socket.emit('rejoinRoom', {
       roomCode: data.roomCode,
-      franchiseName: myFranchise.name
+      franchiseName: myFranchise // myFranchise is a string
     });
   });
 
